@@ -1,0 +1,16 @@
+{
+  "name": "challenge-bosch",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  }
+}

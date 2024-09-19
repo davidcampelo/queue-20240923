@@ -4,6 +4,13 @@
     "dockerfile": "Dockerfile",
     "context": ".."
   },
+  "init": true,
+  "capAdd": [
+    "SYS_PTRACE"
+  ],
+  "securityOpt": [
+    "seccomp=unconfined"
+  ],
   "customizations": {
     "vscode": {
       "extensions": [
@@ -11,7 +18,8 @@
         "mhutchie.git-graph",
         "ms-azuretools.vscode-docker",
         "llvm-vs-code-extensions.vscode-clangd",
-        "twxs.cmake"
+        "twxs.cmake",
+        "vadimcn.vscode-lldb"
       ]
     }
   }

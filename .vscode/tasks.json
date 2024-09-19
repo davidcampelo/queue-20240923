@@ -37,6 +37,25 @@
       "dependsOn": [
         "CMake: Configure"
       ]
+    },
+    {
+      "label": "CMake: Run Tests",
+      "detail": "Run CMake tests",
+      "type": "shell",
+      "command": "ctest",
+      "args": [
+        "--output-on-failure"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}/build"
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "dependsOn": [
+        "CMake: Build"
+      ]
     }
   ]
 }

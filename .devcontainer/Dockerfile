@@ -11,7 +11,9 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
         vim \
         gnupg \
         openssh-client \
-        bash-completion && \
+        bash-completion \
+        doxygen \
+        graphviz && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/* && \
     groupadd --gid $USER_GID $USERNAME && \

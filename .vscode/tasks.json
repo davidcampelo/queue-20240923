@@ -56,6 +56,23 @@
       "dependsOn": [
         "CMake: Build"
       ]
+    },
+    {
+      "label": "CMake: Generate Documentation",
+      "detail": "Generate Doxygen documentation",
+      "type": "shell",
+      "command": "cmake",
+      "args": [
+        "--build", "build",
+        "--target", "doxygen"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": "build",
+      "dependsOn": [
+        "CMake: Build"
+      ]
     }
   ]
 }

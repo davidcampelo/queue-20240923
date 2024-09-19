@@ -9,7 +9,9 @@
       "extensions": [
         "eamodio.gitlens",
         "mhutchie.git-graph",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "llvm-vs-code-extensions.vscode-clangd",
+        "twxs.cmake"
       ]
     }
   }

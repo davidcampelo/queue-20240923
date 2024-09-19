@@ -20,7 +20,17 @@
         "llvm-vs-code-extensions.vscode-clangd",
         "twxs.cmake",
         "vadimcn.vscode-lldb"
-      ]
+      ],
+      "settings": {
+        "[cpp]": {
+          "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+          "editor.formatOnSave": true,
+          "editor.rulers": [
+            80
+          ],
+          "editor.tabSize": 2
+        }
+      }
     }
   }
 }

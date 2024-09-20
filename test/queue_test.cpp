@@ -5,75 +5,75 @@
 class QueueTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    q = new Queue<int>{3};
-    EXPECT_EQ(q->Size(), 3);
+    queue = new Queue<int>{3};  // NOLINT(cppcoreguidelines-owning-memory)
+    EXPECT_EQ(queue->Size(), 3);
   }
 
-  void TearDown() override { delete q; }
+  void TearDown() override { delete queue; }
 
-  Queue<int>* q;
+  Queue<int>* queue;  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
 
 TEST_F(QueueTest, PushPop) {
-  q->Push(1);
-  q->Push(2);
-  q->Push(3);
-  EXPECT_EQ(q->Count(), 3);
-  EXPECT_EQ(q->Pop(), 1);
-  EXPECT_EQ(q->Pop(), 2);
-  EXPECT_EQ(q->Pop(), 3);
-  EXPECT_EQ(q->Count(), 0);
+  queue->Push(1);
+  queue->Push(2);
+  queue->Push(3);
+  EXPECT_EQ(queue->Count(), 3);
+  EXPECT_EQ(queue->Pop(), 1);
+  EXPECT_EQ(queue->Pop(), 2);
+  EXPECT_EQ(queue->Pop(), 3);
+  EXPECT_EQ(queue->Count(), 0);
 }
 
 TEST_F(QueueTest, PushOverwritesWhenFull) {
-  q->Push(1);
-  q->Push(2);
-  q->Push(3);
-  q->Push(4);
-  EXPECT_EQ(q->Count(), 3);
-  EXPECT_EQ(q->Pop(), 2);
-  EXPECT_EQ(q->Pop(), 3);
-  EXPECT_EQ(q->Pop(), 4);
-  EXPECT_EQ(q->Count(), 0);
+  queue->Push(1);
+  queue->Push(2);
+  queue->Push(3);
+  queue->Push(4);
+  EXPECT_EQ(queue->Count(), 3);
+  EXPECT_EQ(queue->Pop(), 2);
+  EXPECT_EQ(queue->Pop(), 3);
+  EXPECT_EQ(queue->Pop(), 4);
+  EXPECT_EQ(queue->Count(), 0);
 }
 
 TEST_F(QueueTest, PopFromEmptyQueueBlocks) {
-  std::thread t{[this]() {
+  std::thread thread{[this]() {
     std::this_thread::sleep_for(std::chrono::milliseconds{100});
-    q->Push(1);
+    queue->Push(1);
   }};
-  EXPECT_EQ(q->Pop(), 1);
-  t.join();
+  EXPECT_EQ(queue->Pop(), 1);
+  thread.join();
 }
 
 TEST_F(QueueTest, PopWithTimeoutSucceds) {
-  std::thread t{[this]() {
+  std::thread thread{[this]() {
     std::this_thread::sleep_for(std::chrono::milliseconds{100});
-    q->Push(1);
+    queue->Push(1);
   }};
-  EXPECT_EQ(q->PopWithTimeout(1000), 1);
-  t.join();
+  EXPECT_EQ(queue->PopWithTimeout(1000), 1);
+  thread.join();
 }
 
 TEST_F(QueueTest, PopWithTimeoutFails) {
-  std::thread t{[this]() {
+  std::thread thread{[this]() {
     std::this_thread::sleep_for(std::chrono::milliseconds{1000});
-    q->Push(1);
+    queue->Push(1);
   }};
-  EXPECT_THROW(q->PopWithTimeout(100), std::runtime_error);
-  t.join();
+  EXPECT_THROW(queue->PopWithTimeout(100), std::runtime_error);
+  thread.join();
 }
 
 TEST_F(QueueTest, MultithreadedPushPop) {
   std::thread producer{[this]() {
     for (int i{0}; i < 10; ++i) {
-      q->Push(i);
+      queue->Push(i);
       std::this_thread::sleep_for(std::chrono::milliseconds{100});
     }
   }};
   std::thread consumer{[this]() {
     for (int i{0}; i < 10; ++i) {
-      EXPECT_EQ(q->Pop(), i);
+      EXPECT_EQ(queue->Pop(), i);
     }
   }};
   producer.join();

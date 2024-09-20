@@ -41,9 +41,7 @@ class Queue {
    *
    * @param size The size of the queue.
    */
-  Queue(int size) : size_{size}, head_{0}, tail_{0}, count_{0}, is_stopping_{false} {
-    data_ = new T[size];
-  }
+  explicit Queue(int size) : data_{new T[size]}, size_{size}, count_{0}, is_stopping_{false} {}
 
   /**
    * @brief Destroy the Queue object.
@@ -53,6 +51,26 @@ class Queue {
     cv_.notify_all();
     delete[] data_;
   }
+
+  /**
+   * @brief Deleted copy constructor.
+   */
+  Queue(const Queue&) = delete;
+
+  /**
+   * @brief Deleted move constructor.
+   */
+  Queue(Queue&&) = delete;
+
+  /**
+   * @brief Deleted copy assignment operator.
+   */
+  Queue& operator=(const Queue&) = delete;
+
+  /**
+   * @brief Deleted move assignment operator.
+   */
+  Queue& operator=(Queue&&) = delete;
 
   /**
    * @brief Push an element to the queue.
@@ -124,7 +142,7 @@ class Queue {
    * @param value The value to enqueue.
    */
   inline void Enqueue(T value) {
-    data_[tail_] = value;
+    data_[tail_] = value;  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     tail_ = (tail_ + 1) % size_;
     count_++;
   }
@@ -135,16 +153,16 @@ class Queue {
    * @return T The value dequeued.
    */
   inline T Dequeue() {
-    T value = data_[head_];
+    T value = data_[head_];  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     head_ = (head_ + 1) % size_;
     count_--;
     return value;
   }
 
   T* data_;                       /*!< The data buffer. */
-  const int size_;                /*!< The size of the queue. */
-  int head_;                      /*!< The head of the queue. */
-  int tail_;                      /*!< The tail of the queue. */
+  int size_;                      /*!< The size of the queue. */
+  int head_{0};                   /*!< The head of the queue. */
+  int tail_{0};                   /*!< The tail of the queue. */
   std::atomic<int> count_;        /*!< The number of elements in the queue. */
   std::atomic<bool> is_stopping_; /*!< Flag to indicate if the queue is stopping. */
   mutable std::mutex mutex_;      /*!< The mutex to synchronize access to the queue. */

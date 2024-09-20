@@ -6,8 +6,8 @@
 #define SRC_QUEUE_H_
 
 #include <atomic>
-#include <condition_variable>
-#include <mutex>
+#include <condition_variable>  // NOLINT
+#include <mutex>               // NOLINT
 #include <stdexcept>
 #include <type_traits>
 

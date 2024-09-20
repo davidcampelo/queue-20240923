@@ -12,6 +12,7 @@ RUN export DEBIAN_FRONTEND=noninteractive && \
         gnupg \
         openssh-client \
         bash-completion \
+        cpplint \
         doxygen \
         graphviz && \
     apt-get clean && \

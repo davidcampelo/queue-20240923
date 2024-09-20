@@ -1,5 +1,5 @@
 #include <iostream>
-#include <thread>
+#include <thread>  // NOLINT
 
 #include "queue.h"
 

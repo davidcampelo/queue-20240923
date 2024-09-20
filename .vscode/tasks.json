@@ -73,6 +73,21 @@
       "dependsOn": [
         "CMake: Build"
       ]
+    },
+    {
+      "label": "CPPLint: Lint",
+      "detail": "Run CPPLint on source files",
+      "type": "shell",
+      "command": "cpplint",
+      "args": [
+        "--recursive", "src", "test"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [
+        "$gccte"
+      ]
     }
   ]
 }

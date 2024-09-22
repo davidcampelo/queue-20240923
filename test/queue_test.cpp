@@ -2,19 +2,17 @@
 
 #include <gtest/gtest.h>
 
+#include <memory>
+
 class QueueTest : public ::testing::Test {
  protected:
   void SetUp() override {
-    queue = new Queue<int>{3};  // NOLINT(cppcoreguidelines-owning-memory)
+    queue = std::make_unique<Queue<int>>(3);
     EXPECT_EQ(queue->Size(), 3);
   }
 
-  void TearDown() override {
-    delete queue;
-    queue = nullptr;
-  }
-
-  Queue<int>* queue;  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
+  // NOLINTNEXTLINE(cppcoreguidelines-non-private-member-variables-in-classes)
+  std::unique_ptr<Queue<int>> queue;
 };
 
 TEST_F(QueueTest, PushPop) {
@@ -86,8 +84,7 @@ TEST_F(QueueTest, MultithreadedPushPop) {
 TEST_F(QueueTest, PopReturnsDefaultValueOnShutdown) {
   std::thread thread{[this]() {
     std::this_thread::sleep_for(std::chrono::milliseconds{100});
-    delete queue;
-    queue = nullptr;
+    queue.reset();
   }};
   EXPECT_EQ(queue->Pop(), 0);
   thread.join();
@@ -96,8 +93,7 @@ TEST_F(QueueTest, PopReturnsDefaultValueOnShutdown) {
 TEST_F(QueueTest, PopWithTimeoutReturnsDefaultValueOnShutdown) {
   std::thread thread{[this]() {
     std::this_thread::sleep_for(std::chrono::milliseconds{100});
-    delete queue;
-    queue = nullptr;
+    queue.reset();
   }};
   EXPECT_EQ(queue->PopWithTimeout(1000), 0);
   thread.join();

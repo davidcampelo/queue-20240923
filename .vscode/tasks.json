@@ -39,6 +39,18 @@
       ]
     },
     {
+      "label": "CMake: Clean",
+      "detail": "Clean CMake project",
+      "type": "shell",
+      "command": "rm",
+      "args": [
+        "-rf", "build"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
       "label": "CMake: Run Tests",
       "detail": "Run CMake tests",
       "type": "shell",

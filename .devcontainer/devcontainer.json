@@ -21,7 +21,8 @@
         "llvm-vs-code-extensions.vscode-clangd",
         "spmeesseman.vscode-taskexplorer",
         "twxs.cmake",
-        "vadimcn.vscode-lldb"
+        "vadimcn.vscode-lldb",
+        "yzhang.markdown-all-in-one"
       ],
       "settings": {
         "[cpp]": {

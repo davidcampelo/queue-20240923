@@ -41,7 +41,7 @@ class Queue {
    *
    * @param size The size of the queue.
    */
-  explicit Queue(int size) : data_{new T[size]}, size_{size}, count_{0}, is_stopping_{false} {}
+  explicit Queue(int size) : data_{new T[size]}, size_{size}, is_stopping_{false} {}
 
   /**
    * @brief Destroy the Queue object.
@@ -79,12 +79,10 @@ class Queue {
    */
   void Push(T value) {
     std::unique_lock<std::mutex> lock{mutex_};
-    if (count_ == size_) {
-      head_ = (head_ + 1) % size_;
-      count_--;
+    if (!is_stopping_) {
+      Enqueue(value);
+      cv_.notify_one();
     }
-    Enqueue(value);
-    cv_.notify_one();
   }
 
   /**
@@ -95,10 +93,7 @@ class Queue {
   T Pop() {
     std::unique_lock<std::mutex> lock{mutex_};
     cv_.wait(lock, [this] { return count_ > 0 || is_stopping_; });
-    if (is_stopping_ && count_ == 0) {
-      return T{};
-    }
-    return Dequeue();
+    return is_stopping_ || count_ == 0 ? T{} : Dequeue();
   }
 
   /**
@@ -115,10 +110,7 @@ class Queue {
                       [this] { return count_ > 0 || is_stopping_; })) {
       throw std::runtime_error{"Timeout waiting for data"};
     }
-    if (is_stopping_ && count_ == 0) {
-      return T{};
-    }
-    return Dequeue();
+    return is_stopping_ || count_ == 0 ? T{} : Dequeue();
   }
 
   /**
@@ -142,6 +134,10 @@ class Queue {
    * @param value The value to enqueue.
    */
   inline void Enqueue(T value) {
+    if (count_ == size_) {
+      head_ = (head_ + 1) % size_;
+      count_--;
+    }
     data_[tail_] = value;  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     tail_ = (tail_ + 1) % size_;
     count_++;
@@ -163,7 +159,7 @@ class Queue {
   int size_;                      /*!< The size of the queue. */
   int head_{0};                   /*!< The head of the queue. */
   int tail_{0};                   /*!< The tail of the queue. */
-  std::atomic<int> count_;        /*!< The number of elements in the queue. */
+  int count_{0};                  /*!< The number of elements in the queue. */
   std::atomic<bool> is_stopping_; /*!< Flag to indicate if the queue is stopping. */
   mutable std::mutex mutex_;      /*!< The mutex to synchronize access to the queue. */
   std::condition_variable cv_;    /*!< The condition variable to notify waiting threads. */

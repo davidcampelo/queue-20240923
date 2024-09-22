@@ -9,7 +9,10 @@ class QueueTest : public ::testing::Test {
     EXPECT_EQ(queue->Size(), 3);
   }
 
-  void TearDown() override { delete queue; }
+  void TearDown() override {
+    delete queue;
+    queue = nullptr;
+  }
 
   Queue<int>* queue;  // NOLINT(cppcoreguidelines-non-private-member-variables-in-classes)
 };
@@ -78,4 +81,24 @@ TEST_F(QueueTest, MultithreadedPushPop) {
   }};
   producer.join();
   consumer.join();
+}
+
+TEST_F(QueueTest, PopReturnsDefaultValueOnShutdown) {
+  std::thread thread{[this]() {
+    std::this_thread::sleep_for(std::chrono::milliseconds{100});
+    delete queue;
+    queue = nullptr;
+  }};
+  EXPECT_EQ(queue->Pop(), 0);
+  thread.join();
+}
+
+TEST_F(QueueTest, PopWithTimeoutReturnsDefaultValueOnShutdown) {
+  std::thread thread{[this]() {
+    std::this_thread::sleep_for(std::chrono::milliseconds{100});
+    delete queue;
+    queue = nullptr;
+  }};
+  EXPECT_EQ(queue->PopWithTimeout(1000), 0);
+  thread.join();
 }
